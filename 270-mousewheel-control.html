@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Swiper demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="swiper.min.css">
+    <script src="TweenMax.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        
+        html,
+        body {
+            position: relative;
+            height: 100%;
+        }
+        
+        .swiper-container {
+            width: 100%;
+            height: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .swiper-slide {
+            width: 5.44rem;
+            height: 9.67rem;
+            margin: 0 auto;
+            background-repeat: no-repeat;
+            background-position: top center;
+            /* 垂直方向居上，水平方向居中 */
+            background-size: contain;
+        }
+        /* 背景图 */
+        
+        .sld1 {
+            background-image: url("images/bg1.png");
+        }
+        
+        .sld2 {
+            background-image: url("images/bg2.png");
+        }
+        
+        .sld3 {
+            background-image: url("images/bg3.png");
+        }
+        
+        .sld4 {
+            background-image: url("images/bg4.png");
+        }
+        
+        .sld5 {
+            background-image: url("images/bg5.png");
+        }
+        
+        #pic1 {
+            width: 3.19rem;
+            height: 3.09rem;
+            position: absolute;
+        }
+        
+        #pic2 {
+            width: 2.75rem;
+            height: 2.69rem;
+            float: right;
+            position: relative;
+        }
+        
+        #pic3 {
+            width: 3.47rem;
+            height: 2.68rem;
+            position: absolute;
+            margin-top: 2.8rem;
+        }
+        
+        #pic4 {
+            position: absolute;
+            width: 2.21rem;
+            height: 3.24rem;
+            margin-top: 2.4rem;
+            right: 0;
+        }
+        
+        #pic5 {
+            width: 4.52rem;
+            height: 0.92rem;
+            margin-top: 2.65rem;
+            margin-left: 0.45rem;
+        }
+        
+        .video {
+            width: 4.58rem;
+            height: 2.57rem;
+            margin: -0.09rem auto;
+        }
+        
+        video {
+            width: 4.58rem;
+            height: 2.57rem;
+        }
+        
+        .gifPic {
+            width: 5.44rem;
+            margin-top: 3.48rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="swiper-container" onscroll="lazyload()">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide sld1">
+                <a href="#"><img src="" data-src="images/pic1.png" id="pic1"></a>
+                <a href="##"><img src="" data-src="images/pic2.png" id="pic2"></a>
+                <a href="###"><img src="" data-src="images/pic3.png" id="pic3"></a>
+                <a href="####"><img src="" data-src="images/pic4.png" id="pic4"></a>
+                <img src="" data-src="images/pic5.png" id="pic5">
+                <div class="video">
+                    <video controls="controls" poster="images/top1.png" style="object-fit:cover" -webkit-playsinline webkit-playsinline playsinline="true">
+                    <source src="video1.mp4">
+                    你的浏览器不支持HTML5视频。
+                </video>
+                </div>
+            </div>
+            <div class="swiper-slide sld2">
+                <img class="gifPic" src="" data-src="images/spec1_1.gif">
+            </div>
+            <div class="swiper-slide sld3">
+                <img class="gifPic" src="" data-src="images/spec1_2.gif">
+            </div>
+            <div class="swiper-slide sld4">
+                <img class="gifPic" src="" data-src="images/spec1_3.gif">
+            </div>
+            <div class="swiper-slide sld5">
+            </div>
+        </div>
+    </div>
+    <script src="swiper.min.js"></script>
+    <script>
+        var n = 0; //索引从0开始，存储图片加载到的位置，避免重复加载
+        var swiper = new Swiper('.swiper-container', {
+            direction: 'vertical',
+            slidesPerView: 1,
+            spaceBetween: 30,
+            mousewheel: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            on: {
+                slideChangeTransitionEnd: function() { //页面切换
+                    console.log(this.activeIndex); //切换结束时，告诉我现在是第几个slide,从0开始
+                    if (n <= this.activeIndex - 1) {
+                        lazyload();
+                        n = this.activeIndex;
+                    } else {
+                        console.log('已经加载过了')
+                    }
+
+                },
+            },
+        });
+        //懒加载
+        function lazyload() {
+            console.log('加载')
+            var imgs = document.getElementsByClassName('swiper-slide-active')[0].getElementsByTagName('img');
+            for (var i = 0; i < imgs.length; i++) {
+                if (imgs[i].getAttribute("src") == "") {
+                    imgs[i].src = imgs[i].getAttribute("data-src");
+                }
+            }
+        };
+        lazyload();
+
+        var designW = 544; //设计稿宽
+        var designH = 967; //设计稿高
+        var font_rate = 100;
+        //利用原生js动态改变html的fontSize
+        function changeFontSize() {
+            // var fontSize = document.getElementsByTagName("html")[0].style.fontSize;
+            var a = document.body.offsetWidth / designW;
+            var b = document.body.offsetHeight / designH;
+            //适配
+            if (a < b) {
+                console.log('以宽度为准');
+                document.getElementsByTagName("html")[0].style.fontSize = document.body.offsetWidth / designW * font_rate + "px";
+                document.getElementsByTagName("body")[0].style.fontSize = document.body.offsetWidth / designW * font_rate + "px";
+            } else {
+                console.log('以高度为准');
+                document.getElementsByTagName("html")[0].style.fontSize = document.body.offsetHeight / designH * font_rate + "px";
+                document.getElementsByTagName("body")[0].style.fontSize = document.body.offsetHeight / designH * font_rate + "px";
+            }
+
+        }
+        changeFontSize();
+        //监测窗口大小变化
+        window.onresize = function() {
+            console.log('窗口大小发生变化');
+            changeFontSize();
+        }
+
+        var tl = new TimelineLite();
+        tl.from('#pic2', 0.5, {
+            left: 100,
+            opacity: 0
+        });
+
+        tl.from('#pic1', 0.2, {
+            left: -100,
+            opacity: 0
+        });
+
+        tl.from('#pic3', 0.3, {
+            left: -100,
+            opacity: 0
+        });
+
+        tl.from('#pic4', 0.5, {
+            scale: .5,
+            autoAlpha: 0
+        }, "+=0.5");
+
+        tl.from("#pic5", 0.6, {
+            rotationY: -90,
+            z: -600,
+            transformOrigin: "80% 50% -100",
+            opacity: 0
+        })
+    </script>
+</body>
+
+</html>
